@@ -2,10 +2,47 @@ import Head from 'next/head'
 import Image from 'next/image'
 import styled from 'styled-components'
 import Link from 'next/link'
+import {db} from '/firebase.js'
+import {uid} from 'uid';
+import {set, ref} from "firebase/database";
+import {useState, useEffect} from "react";
 
 
 export default function Home() {
+    const [name, setName] = useState(""); //tracks state
+
+  const handleNameChange = (e) => {  //catches changes
+    setName(e.target.value);
+  };
+  const [email, setEmail] = useState(""); //tracks state
+
+  const handleEmailChange = (e) => {  //catches changes
+    setEmail(e.target.value);
+  };
+  const [describe, setDescription] = useState(""); //tracks state
+
+  const handleDescribeChange = (e) => {  //catches changes
+    setDescription(e.target.value);
+  };
+  //write
+  const writeToDatabase = () => {  //firebase
+    const uuid = uid();
+    set(ref(db,`/${uuid}` ), {
+      name,
+      email,
+      describe,// not nessesary 
+    });
+    setName(""); //clears input prompt
+    setEmail(""); //clears input prompt
+    setDescription(""); //clears input prompt
+  };
   
+   //Read
+    useEffect(() =>{
+      
+     }, []);
+   //update
+   //delete
 
   return (    
     <Container>
@@ -39,13 +76,14 @@ export default function Home() {
     </Hero>
     <Main>
     <MainLeft>
+    
      <Image
      src="https://i.ibb.co/VQVsx7T/E7pn3-Ee-XEAIcl67-1-scaled.jpg" height={2560} width={940}
     />
     </MainLeft>
     <MainRight>
        <Image
-     src="https://i.ibb.co/09Mwb9H/imgonline-com-ua-resize-Q5-Kp-KRb3-Xh-I.jpg" height={1895} width={940}
+     src="https://i.ibb.co/kHYNpyv/0001-min-2-1.jpg" height={1895} width={940}
     />
     </MainRight>
     </Main>
@@ -87,15 +125,15 @@ export default function Home() {
        </FormTitle>
        <form action="http://www.acme.com/register" method="POST">
   <label for="name">Name</label><br />
-  <input id="name" type="text" autocomplete="name" required /><br />
-  <label for="name">Email</label><br />
-  <input id="name" type="text" autocomplete="name" required /><br />
-  <label for="name">Describe your project</label><br />
-  <textarea id="name" type="text" autocomplete="name" required /><br />
+  <input id="name" type="text" autocomplete="name" value={name} onChange={handleNameChange} required /><br />
+  <label for="email">Email</label><br />
+  <input id="email" type="text" autocomplete="name" value={email} onChange={handleEmailChange} required /><br />
+  <label for="describe">Describe your project</label><br />
+  <textarea id="describe" type="text" autocomplete="name" value={describe} onChange={handleDescribeChange} required /><br />
   
  
  
-  <button type="submit">Submit</button>
+  <button onClick={writeToDatabase} type="submit">Submit</button>
 </form>
        </Form>
       
